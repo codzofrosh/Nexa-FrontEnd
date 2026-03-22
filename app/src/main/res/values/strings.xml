@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Nexa Android</string>
+    <string name="eyebrow">Nexa Android Auth</string>
+    <string name="hero_title">Android login and signup for the Nexa connector.</string>
+    <string name="hero_body">This native Android client gives you login and signup screens, backend endpoint overrides, direct auth API requests, stored session details, and a debugging activity log.</string>
+    <string name="login_tab">Login</string>
+    <string name="signup_tab">Sign up</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="username_hint">Username</string>
+    <string name="email_hint">Email address</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="login_cta">Login to Nexa</string>
+    <string name="signup_cta">Create account</string>
+    <string name="settings_title">Backend auth settings</string>
+    <string name="settings_body">The referenced backend repo was not reachable from this environment, so the Android app keeps the base URL and auth routes editable and also tries common fallback paths.</string>
+    <string name="base_url_hint">API base URL</string>
+    <string name="login_endpoint_hint">Login endpoint</string>
+    <string name="signup_endpoint_hint">Signup endpoint</string>
+    <string name="save_settings">Save settings</string>
+    <string name="clear_session">Clear stored session</string>
+    <string name="session_title">Stored session</string>
+    <string name="response_title">Last response</string>
+    <string name="activity_title">Activity log</string>
+    <string name="settings_saved">Settings saved.</string>
+    <string name="validation_required">Email and password are required.</string>
+    <string name="validation_password_mismatch">Passwords do not match.</string>
+    <string name="login_success">Login successful.</string>
+    <string name="signup_success">Signup successful.</string>
+    <string name="loading">Please wait…</string>
+    <string name="unknown_error">Something went wrong.</string>
+    <string name="no_session_yet">No session stored yet.</string>
+    <string name="no_response_yet">No backend response yet.</string>
+    <string name="no_activity_yet">No auth activity yet.</string>
+    <string name="response_template">Endpoint: %1$s
+Status: %2$s
+
+%3$s</string>
+</resources>
