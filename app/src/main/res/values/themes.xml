@@ -1,0 +1,33 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.NexaAndroid" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/nexa_accent</item>
+        <item name="colorSecondary">@color/nexa_accent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/nexa_background</item>
+    </style>
+
+    <style name="Theme.NexaAndroid" parent="Base.Theme.NexaAndroid" />
+
+    <style name="Widget.NexaAndroid.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/nexa_surface</item>
+        <item name="boxStrokeColor">@color/nexa_stroke</item>
+        <item name="hintTextColor">@color/nexa_text_muted</item>
+        <item name="android:textColorHint">@color/nexa_text_muted</item>
+    </style>
+
+    <style name="Widget.NexaAndroid.PrimaryButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/nexa_accent</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="cornerRadius">24dp</item>
+    </style>
+
+    <style name="Widget.NexaAndroid.SecondaryButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/nexa_accent</item>
+        <item name="android:textColor">@color/nexa_accent</item>
+        <item name="cornerRadius">24dp</item>
+    </style>
+
+    <style name="Widget.NexaAndroid.ToggleButton" parent="Widget.Material3.Button.TonalButton">
+        <item name="cornerRadius">20dp</item>
+    </style>
+</resources>
