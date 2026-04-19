@@ -1,73 +1,90 @@
-# Nexa Android
+# Nexa Frontend
 
-This repository now contains a native Android authentication app for Nexa rather than a browser SPA.
+React + TypeScript SPA for the Nexa platform, built with Vite and served via Nginx in Docker. The image is published to GitHub Container Registry (GHCR) and deployed to EC2.
 
-## What the app does
+## Tech stack
 
-- provides **Login** and **Sign up** flows in a native Android UI;
-- lets you edit the **API base URL**, **login endpoint**, and **signup endpoint** inside the app;
-- sends authentication requests directly to the backend using `HttpURLConnection`;
-- stores the latest **session token**, **refresh token**, and **user payload** locally for inspection;
-- keeps an **activity log** of recent auth attempts for debugging.
+- **React 18** with React Router v6
+- **TypeScript 5** + Vite 5
+- **Nginx 1.27** (Alpine) as the production server
+- **Docker** multi-stage build (Node 20 builder → Nginx server)
 
-## Backend integration
+## Local development
 
-The backend repository you referenced is:
+```bash
+npm install
+npm run dev        # dev server at http://localhost:5173
+npm run build      # production build to /dist
+npm run preview    # preview the production build locally
+```
 
-- `https://github.com/codzofrosh/nexa-beeper-connector`
+## Docker
 
-That GitHub repository was not reachable from this execution environment, so the Android client was implemented with configurable auth routes and route fallbacks.
+### Build locally
 
-### Default auth routes
+```bash
+docker build -t nexa-frontend .
+docker run -p 80:80 nexa-frontend
+```
 
-- Login: `/api/auth/login`
-- Sign up: `/api/auth/signup`
+### Pull from GHCR
 
-### Automatic fallback attempts
+```bash
+docker pull ghcr.io/codzofrosh/nexa-frontend:latest
+docker run -p 80:80 ghcr.io/codzofrosh/nexa-frontend:latest
+```
 
-#### Login
+## CI/CD — GitHub Actions
 
-- `/api/auth/login`
-- `/api/v1/auth/login`
-- `/auth/login`
-- `/api/login`
+The workflow at [.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml) runs on every push to `main` and on manual trigger (`workflow_dispatch`).
 
-#### Sign up
+**What it does:**
+1. Checks out the repo
+2. Logs in to GHCR using `GITHUB_TOKEN`
+3. Builds the Docker image and pushes it to `ghcr.io/codzofrosh/nexa-frontend:latest`
 
-- `/api/auth/signup`
-- `/api/auth/register`
-- `/api/v1/auth/signup`
-- `/api/v1/auth/register`
-- `/auth/signup`
-- `/auth/register`
+No secrets need to be configured manually — `GITHUB_TOKEN` is provided automatically by GitHub Actions.
 
-For Android emulator usage, the default base URL is set to `http://10.0.2.2:3000` so the app can reach a backend running on your host machine.
+## Making the GHCR package public
 
-## Android stack choice
+After the first workflow run:
 
-This app uses:
+1. Go to **github.com/codzofrosh → Packages → nexa-frontend**
+2. Click **Package settings → Change visibility → Public**
 
-- **Kotlin** for the Android application code;
-- **Android Views + Material 3** for a stable native UI;
-- **SharedPreferences** for local settings/session persistence;
-- **HttpURLConnection** for backend communication without adding extra networking dependencies.
+This allows the EC2 instance to pull the image without authentication.
 
-This is a strong fit for an MVP Android app because it stays simple, understandable, and easy to align with a changing backend contract.
+## EC2 deployment
+
+If the package is kept **private**, authenticate once on the EC2 instance:
+
+```bash
+echo $GITHUB_TOKEN | docker login ghcr.io -u codzofrosh --password-stdin
+```
+
+Then pull and run:
+
+```bash
+docker pull ghcr.io/codzofrosh/nexa-frontend:latest
+docker run -d -p 80:80 --restart unless-stopped ghcr.io/codzofrosh/nexa-frontend:latest
+```
 
 ## Project structure
 
-- `app/src/main/java/com/nexa/app/MainActivity.kt` – login/signup UI behavior.
-- `app/src/main/java/com/nexa/app/data/AuthApiClient.kt` – auth networking and fallback endpoint handling.
-- `app/src/main/java/com/nexa/app/data/AuthPreferences.kt` – persistence for settings, session, and logs.
-- `app/src/main/res/layout/activity_main.xml` – native Android screen layout.
-- `app/src/main/res/values/` – strings, colors, and theme resources.
-
-## Commands
-
-Because binary files are not supported in this workflow, `gradle/wrapper/gradle-wrapper.jar` is intentionally not committed. Regenerate it locally before using the wrapper commands:
-
-```bash
-gradle wrapper
-./gradlew tasks
-./gradlew assembleDebug
 ```
+├── src/                  # React application source
+├── public/               # Static assets
+├── Dockerfile            # Multi-stage build (Node → Nginx)
+├── nginx.conf            # Nginx config (proxies /api/* to backend)
+├── vite.config.ts
+├── tsconfig.json
+└── .github/
+    └── workflows/
+        └── docker-publish.yml   # CI/CD pipeline
+```
+
+## Backend integration
+
+All `/api/*` requests are proxied to the backend by Nginx. The `VITE_API_URL` env var is intentionally left empty so all API calls go to the same origin, keeping CORS simple.
+
+Backend repository: `https://github.com/codzofrosh/nexa-beeper-connector`
