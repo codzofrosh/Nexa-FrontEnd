@@ -16,7 +16,7 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
   return res.json()
 }
 
-export interface User { id: number; name: string; email: string }
+export interface User { id: number; name: string; email: string; phone?: string | null }
 export interface Stats {
   total_messages: number
   pending_actions: number
@@ -34,9 +34,9 @@ export interface OnboardResult {
 
 export const api = {
   // Auth
-  register: (name: string, email: string, password: string) =>
+  register: (name: string, email: string, password: string, phone?: string) =>
     req<{ success: boolean; user: User }>('/api/auth/register', {
-      method: 'POST', body: JSON.stringify({ name, email, password }),
+      method: 'POST', body: JSON.stringify({ name, email, password, phone: phone || undefined }),
     }),
   login: (email: string, password: string) =>
     req<{ success: boolean; user: User }>('/api/auth/login', {

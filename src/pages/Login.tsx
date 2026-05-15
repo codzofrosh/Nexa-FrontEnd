@@ -26,6 +26,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
   const [tab, setTab] = useState<'login' | 'register'>('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -36,7 +37,7 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
     try {
       const res = tab === 'login'
         ? await api.login(email, password)
-        : await api.register(name, email, password)
+        : await api.register(name, email, password, phone || undefined)
       if (res.success && res.user) onLogin(res.user)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -79,6 +80,8 @@ export default function Login({ onLogin }: { onLogin: (u: User) => void }) {
             <>
               <label style={S.label}>Name</label>
               <input style={S.input} value={name} onChange={e => setName(e.target.value)} placeholder="Jane Doe" required />
+              <label style={S.label}>Mobile number <span style={{ color: '#475569' }}>(optional)</span></label>
+              <input style={S.input} type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 555 000 0000" />
             </>
           )}
           <label style={S.label}>Email</label>
